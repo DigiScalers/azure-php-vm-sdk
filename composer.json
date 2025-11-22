@@ -1,10 +1,11 @@
 {
-  "name": "digiscaler/azure-vm-sdk",
+  "name": "aalehuzoor/azure-vm-sdk",
   "description": "Minimal PHP SDK for Azure VM management using ARM REST API",
   "type": "library",
   "require": {
     "php": "^8.1",
-    "guzzlehttp/guzzle": "^7.0"
+    "guzzlehttp/guzzle": "^7.0",
+    "vlucas/phpdotenv": "^5.5"
   },
   "autoload": {
     "psr-4": {

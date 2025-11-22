@@ -14,6 +14,16 @@ class AzureClient {
     private string $apiVersion = '2025-04-01'; // choose appropriate API version
 
     public function __construct(string $tenantId, string $clientId, string $clientSecret, array $guzzleOpts = []) {
+        if (trim($tenantId) === '') {
+            throw new \InvalidArgumentException('Azure tenant ID is required and cannot be empty');
+        }
+        if (trim($clientId) === '') {
+            throw new \InvalidArgumentException('Azure client ID is required and cannot be empty');
+        }
+        if (trim($clientSecret) === '') {
+            throw new \InvalidArgumentException('Azure client secret is required and cannot be empty');
+        }
+
         $this->tenantId = $tenantId;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
