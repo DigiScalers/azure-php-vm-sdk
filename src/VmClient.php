@@ -73,6 +73,35 @@ class VmClient {
     }
 
     /**
+     * Get available VM image offers for a specific publisher and location
+     * 
+     * @param string $subscriptionId Azure subscription ID
+     * @param string $location Azure region (e.g., 'eastus', 'westus')
+     * @param string $publisher Publisher name (e.g., 'MicrosoftWindowsServer', 'Canonical')
+     * @return array List of available offers
+     */
+    public function getAvailableOffers(string $subscriptionId, string $location, string $publisher): array {
+        $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers/{$publisher}/artifacttypes/vmimage/offers";
+        $response = $this->client->request('GET', $path, []);
+        return $this->extractList($response);
+    }
+
+    /**
+     * Get available VM image SKUs for a specific publisher, offer, and location
+     * 
+     * @param string $subscriptionId Azure subscription ID
+     * @param string $location Azure region (e.g., 'eastus', 'westus')
+     * @param string $publisher Publisher name (e.g., 'MicrosoftWindowsServer', 'Canonical')
+     * @param string $offer Offer name (e.g., 'WindowsServer', 'UbuntuServer')
+     * @return array List of available SKUs
+     */
+    public function getAvailableSKUs(string $subscriptionId, string $location, string $publisher, string $offer): array {
+        $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers/{$publisher}/artifacttypes/vmimage/offers/{$offer}/skus";
+        $response = $this->client->request('GET', $path, []);
+        return $this->extractList($response);
+    }
+
+    /**
      * Get available OS types (VM images) for a specific location
      * 
      * @param string $subscriptionId Azure subscription ID
