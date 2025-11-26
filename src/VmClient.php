@@ -73,20 +73,31 @@ class VmClient {
         if ($publisher && $offer) {
             $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers/{$publisher}/artifacttypes/vmimage/offers/{$offer}/skus";
             $response = $this->client->request('GET', $path, []);
-            return $response['value'] ?? [];
+            return $this->extractList($response);
         }
         
         // If only publisher is provided, get offers
         if ($publisher) {
             $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers/{$publisher}/artifacttypes/vmimage/offers";
             $response = $this->client->request('GET', $path, []);
-            return $response['value'] ?? [];
+            return $this->extractList($response);
         }
         
         // Otherwise, get all publishers
         $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers";
         $response = $this->client->request('GET', $path, []);
-        return $response['value'] ?? [];
+        return $this->extractList($response);
+    }
+
+    private function extractList(array $response): array {
+        if (isset($response['value']) && is_array($response['value'])) {
+            return $response['value'];
+        }
+        // If response is a numeric array (list), return it directly
+        if (array_is_list($response) && !empty($response)) {
+            return $response;
+        }
+        return [];
     }
 
     public function createVM(
