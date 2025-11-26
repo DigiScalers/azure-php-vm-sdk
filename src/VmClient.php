@@ -153,8 +153,13 @@ class VmClient {
         int $diskSizeGB,
         string $adminUsername,
         string $adminPassword,
+        array $imageReference = [
+            'publisher' => 'MicrosoftWindowsServer',
+            'offer' => 'WindowsServer',
+            'sku' => '2019-Datacenter',
+            'version' => 'latest'
+        ],
         bool $dedicatedAdminRdp = false,
-        string $os = 'Windows'
     ): array {
         // 1. Select VM Size
         $vmSizes = $this->getAvailableVMSizes($subscriptionId, $location);
@@ -226,19 +231,6 @@ class VmClient {
         }
 
         $this->client->request('PUT', $nicId, [], $nicPayload);
-
-        // 3. Prepare VM Payload
-        $imageReference = [
-            'publisher' => 'MicrosoftWindowsServer',
-            'offer' => 'WindowsServer',
-            'sku' => '2019-Datacenter',
-            'version' => 'latest'
-        ];
-
-        if (strtolower($os) !== 'windows') {
-             // Fallback or error. For now, defaulting to Windows as requested.
-             // If user passes something else, we might want to handle it, but per requirements "just windos for now"
-        }
 
         $vmPayload = [
             'location' => $location,

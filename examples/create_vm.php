@@ -35,7 +35,12 @@ $diskSizeGB = 128;   // OS disk size in GB
 $dedicatedAdminRdp = false; // Set to true to create a public IP for remote access
 
 // Operating System
-$os = 'Windows'; // Currently only Windows is supported
+$os = [
+    'publisher' => 'MicrosoftWindowsServer',
+    'offer' => 'WindowsServer',
+    'sku' => '2019-Datacenter',
+    'version' => 'latest'
+];
 
 try {
     // Initialize Azure Client
