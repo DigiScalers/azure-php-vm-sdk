@@ -28,3 +28,5 @@ foreach ($vmSizes as $vmSize) {
     echo "Memory: " . $vmSize['memoryInMB'] / 1024 . "GB\n";
     echo "\n";
 }
+
+print_r($vmSizes);

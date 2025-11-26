@@ -59,6 +59,36 @@ class VmClient {
         return $response['value'] ?? [];
     }
 
+    /**
+     * Get available OS types (VM images) for a specific location
+     * 
+     * @param string $subscriptionId Azure subscription ID
+     * @param string $location Azure region (e.g., 'eastus')
+     * @param string|null $publisher Filter by publisher (e.g., 'MicrosoftWindowsServer', 'Canonical')
+     * @param string|null $offer Filter by offer (e.g., 'WindowsServer', 'UbuntuServer')
+     * @return array List of available VM images
+     */
+    public function getAvailableOSTypes(string $subscriptionId, string $location, ?string $publisher = null, ?string $offer = null): array {
+        // If publisher and offer are provided, get SKUs
+        if ($publisher && $offer) {
+            $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers/{$publisher}/artifacttypes/vmimage/offers/{$offer}/skus";
+            $response = $this->client->request('GET', $path, []);
+            return $response['value'] ?? [];
+        }
+        
+        // If only publisher is provided, get offers
+        if ($publisher) {
+            $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers/{$publisher}/artifacttypes/vmimage/offers";
+            $response = $this->client->request('GET', $path, []);
+            return $response['value'] ?? [];
+        }
+        
+        // Otherwise, get all publishers
+        $path = "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/publishers";
+        $response = $this->client->request('GET', $path, []);
+        return $response['value'] ?? [];
+    }
+
     public function createVM(
         string $subscriptionId,
         string $resourceGroup,
