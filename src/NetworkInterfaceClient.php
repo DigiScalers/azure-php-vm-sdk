@@ -23,21 +23,31 @@ class NetworkInterfaceClient {
         string $resourceGroup,
         string $location,
         string $publicIpName,
-        string $domainNameLabel
+        array $publicIpPayload
+    ): array {      
+        return $this->client->request(
+            'PUT', "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/publicIPAddresses/{$publicIpName}",
+            [], $publicIpPayload
+        );
+    }
+
+    /**
+     * Get a Public IP Address
+     * 
+     * @param string $subscriptionId Azure subscription ID
+     * @param string $resourceGroup Resource group name
+     * @param string $publicIpName Name for the public IP
+     * @return array Public IP resource
+     */
+    public function getPublicIp(
+        string $subscriptionId,
+        string $resourceGroup,
+        string $publicIpName
     ): array {
-        $publicIpId = "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/publicIPAddresses/{$publicIpName}";
-        
-        $publicIpPayload = [
-            'location' => $location,
-            'properties' => [
-                'publicIPAllocationMethod' => 'Dynamic',
-                'dnsSettings' => [
-                    'domainNameLabel' => $domainNameLabel
-                ]
-            ]
-        ];
-        
-        return $this->client->request('PUT', $publicIpId, [], $publicIpPayload);
+        return $this->client->request(
+            'GET',
+            "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/publicIPAddresses/{$publicIpName}"
+        );
     }
 
     /**
@@ -45,46 +55,40 @@ class NetworkInterfaceClient {
      * 
      * @param string $subscriptionId Azure subscription ID
      * @param string $resourceGroup Resource group name
-     * @param string $location Azure region (e.g., 'eastus', 'westus')
      * @param string $nicName Name for the network interface
-     * @param string $subnetId Full resource ID of the subnet
-     * @param string|null $publicIpId Optional full resource ID of the public IP to attach
+     * @param array $nicPayload Network Interface payload
      * @return array Created Network Interface resource
      */
     public function createNetworkInterface(
         string $subscriptionId,
         string $resourceGroup,
-        string $location,
         string $nicName,
-        string $subnetId,
-        ?string $publicIpId = null
+        array $nicPayload
     ): array {
-        $nicId = "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/networkInterfaces/{$nicName}";
-        
-        $nicPayload = [
-            'location' => $location,
-            'properties' => [
-                'ipConfigurations' => [
-                    [
-                        'name' => 'ipconfig1',
-                        'properties' => [
-                            'subnet' => [
-                                'id' => $subnetId
-                            ],
-                            'privateIPAllocationMethod' => 'Dynamic'
-                        ]
-                    ]
-                ]
-            ]
-        ];
+        return $this->client->request(
+            'PUT',
+            "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/networkInterfaces/{$nicName}",
+            [],
+            $nicPayload
+        );
+    }
 
-        // Attach Public IP if provided
-        if ($publicIpId !== null) {
-            $nicPayload['properties']['ipConfigurations'][0]['properties']['publicIPAddress'] = [
-                'id' => $publicIpId
-            ];
-        }
-
-        return $this->client->request('PUT', $nicId, [], $nicPayload);
+    /**
+     * Get a Network Interface
+     * 
+     * @param string $subscriptionId Azure subscription ID
+     * @param string $resourceGroup Resource group name
+     * @param string $nicName Name for the network interface
+     * @return array Network Interface resource
+     */
+    public function getNetworkInterface(
+        string $subscriptionId,
+        string $resourceGroup,
+        string $nicName
+    ): array {
+        return $this->client->request(
+            'GET',
+            "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/networkInterfaces/{$nicName}"
+        );
     }
 }
