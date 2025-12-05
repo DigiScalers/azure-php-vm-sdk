@@ -163,4 +163,25 @@ class NetworkInterfaceClient {
             "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/networkInterfaces"
         );
     }
+
+    public function listSubnets(
+        string $subscriptionId,
+        string $resourceGroup,
+        string $virtualNetworkName
+    ): array {
+        return $this->client->request(
+            'GET',
+            "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/virtualNetworks/{$virtualNetworkName}/subnets"
+        );
+    }
+
+    public function listVirtualNetworks(
+        string $subscriptionId,
+        string $resourceGroup
+    ): array {
+        return $this->client->request(
+            'GET',
+            "/subscriptions/{$subscriptionId}/resourceGroups/{$resourceGroup}/providers/Microsoft.Network/virtualNetworks"
+        );
+    }
 }

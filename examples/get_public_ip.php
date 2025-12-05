@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 use AzureVmSdk\AzureClient;
-use AzureVmSdk\VmClient;
+use AzureVmSdk\NetworkInterfaceClient;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
@@ -12,13 +12,11 @@ $clientSecret = $_ENV['AZURE_CLIENT_SECRET'];
 $subscriptionId = $_ENV['AZURE_SUBSCRIPTION_ID'];
 $resourceGroup = $_ENV['AZURE_RESOURCE_GROUP'];
 
-$vmName = 'my-test-vm-1764394692';
-
 $azure = new AzureClient($tenant, $clientId, $clientSecret);
-$vm = new VmClient($azure);
 
-$info = $vm->getVm($subscriptionId, $resourceGroup, $vmName);
-echo "VM info:\n" . json_encode($info, JSON_PRETTY_PRINT) . PHP_EOL;
+$networkInterfaceClient = new NetworkInterfaceClient($azure);
 
-$instance = $vm->getInstanceView($subscriptionId, $resourceGroup, $vmName);
-echo "Instance view:\n" . json_encode($instance, JSON_PRETTY_PRINT) . PHP_EOL;
+$publicIp = $networkInterfaceClient->getPublicIp($subscriptionId, $resourceGroup, 'my-test-vm-1764394692-pip');
+print_r($publicIp);
+
+
