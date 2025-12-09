@@ -97,11 +97,11 @@ class VmClient
 
     public function getComputeUsages(string $subscriptionId, string $location): array
     {
-        return $this->client->request('GET', "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/usages", []);
+        return $this->client->request('GET', "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/usages", [])['value'];
     }
 
     public function getAllQuotas(string $subscriptionId, string $location): array
     {
-        return $this->client->request('GET', "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/providers/Microsoft.Quota/quotas", []);
+        return $this->client->request('GET', "/subscriptions/{$subscriptionId}/providers/Microsoft.Compute/locations/{$location}/providers/Microsoft.Quota/quotas", [])['value'];
     }
 }
